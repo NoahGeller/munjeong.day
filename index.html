@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>생일 축하해</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=Noto+Serif+KR:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf6f1;
+    --bg-2: #f6ebe3;
+    --card: #ffffff;
+    --ink: #3a2a2a;
+    --muted: #8a7570;
+    --line: #ecdcd3;
+    --accent: #c4566b;
+    --accent-soft: #f7dfe3;
+    --gold: #b8875a;
+    --shadow: 0 1px 2px rgba(90, 40, 40, .05), 0 8px 24px rgba(90, 40, 40, .07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1d1617;
+      --bg-2: #241b1c;
+      --card: #2a2122;
+      --ink: #f3e7e3;
+      --muted: #ab9893;
+      --line: #3d3132;
+      --accent: #e7889a;
+      --accent-soft: #43282e;
+      --gold: #d8ab7e;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 50% -200px, var(--bg-2), var(--bg)) fixed, var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 Inter, system-ui, sans-serif;
+    min-height: 100vh;
+  }
+  main { max-width: 620px; margin: 0 auto; padding: 56px 16px 96px; }
+
+  header { text-align: center; margin-bottom: 36px; }
+  h1 {
+    font-family: "Noto Serif KR", serif;
+    font-weight: 600; font-size: clamp(36px, 8vw, 52px); line-height: 1.2;
+    margin: 0;
+  }
+  h1 em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+  .status {
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    margin: 28px auto 0; padding: 10px 18px; border-radius: 999px;
+    background: var(--card); box-shadow: var(--shadow); width: fit-content; max-width: 100%;
+    font-size: 14px; color: var(--muted);
+  }
+  .status[hidden] { display: none; }
+  .meta .lock { display: block; opacity: .7; }
+  #cd { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+  .status b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .progress { display: flex; gap: 5px; justify-content: center; margin-top: 18px; }
+  .progress i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: background .4s; }
+  .progress i.on { background: var(--accent); }
+
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+  .step {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    padding: 20px 22px; box-shadow: var(--shadow);
+    animation: rise .6s ease both;
+  }
+  .step.future { background: transparent; box-shadow: none; border-style: dashed; padding: 14px 22px; }
+  .step.future .meta { margin: 0; }
+  .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .meta .n { font-weight: 600; letter-spacing: .06em; text-transform: uppercase; font-size: 11px; color: var(--gold); }
+  .clue {
+    font-family: "Cormorant Garamond", Georgia, serif; font-size: 23px; line-height: 1.35; margin: 0;
+  }
+  .step.current { border-color: var(--accent); }
+  .step.final.open {
+    background: linear-gradient(160deg, var(--accent-soft), var(--card));
+    border-color: var(--accent); text-align: center; padding: 32px 22px;
+  }
+  .step.final.open .clue { font-size: 28px; }
+  .step.final.open .meta { justify-content: center; }
+
+  form { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+  input {
+    flex: 1 1 180px; min-width: 0; font: inherit; color: var(--ink);
+    padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg);
+    outline: none; transition: border-color .2s, box-shadow .2s;
+  }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  button {
+    font: inherit; font-weight: 600; cursor: pointer; border: 0; border-radius: 10px;
+    padding: 11px 18px; background: var(--accent); color: #fff;
+  }
+  button:disabled { opacity: .6; cursor: wait; }
+  .err { color: var(--accent); font-size: 14px; margin: 8px 0 0; min-height: 1em; }
+  .shake { animation: shake .35s; }
+
+  .notify { background: none; color: var(--muted); font-weight: 500; padding: 0; font-size: 13px; text-decoration: underline; }
+  .preview { position: fixed; top: 0; left: 0; right: 0; text-align: center; font-size: 12px; padding: 4px; background: var(--gold); color: #fff; z-index: 2; }
+
+  .heart { position: fixed; bottom: -40px; pointer-events: none; animation: float linear forwards; color: var(--accent); }
+
+  .step.reveal { animation: reveal 1.1s cubic-bezier(.2,.9,.3,1.25) both; }
+
+  /* Lock-breaking effect, anchored on the card's lock icon */
+  .fx { position: fixed; z-index: 10; width: 0; height: 0; pointer-events: none; }
+  .fx-lock, .fx-shake { position: absolute; width: 48px; height: 62px; }
+  .fx-lock { left: -24px; top: -31px; }
+  .fx-lock svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .fx-shackle path { fill: none; stroke: var(--gold); stroke-width: 16; stroke-linecap: round; }
+  .fx-half rect { fill: var(--accent); }
+  .fx-half .kh { fill: rgba(0, 0, 0, .35); }
+  .fx-l { clip-path: polygon(0 0, 52% 0, 46% 30%, 55% 48%, 44% 66%, 53% 82%, 48% 100%, 0 100%); }
+  .fx-r { clip-path: polygon(52% 0, 100% 0, 100% 100%, 48% 100%, 53% 82%, 44% 66%, 55% 48%, 46% 30%); }
+  .fx-crack polyline { fill: none; stroke: #fff; stroke-width: 5; stroke-linejoin: round; stroke-dasharray: 140; stroke-dashoffset: 140; }
+  .fx-ring { position: absolute; width: 60px; height: 60px; margin: -30px; border-radius: 50%; border: 3px solid var(--gold); opacity: 0; }
+  .fx-shard { position: absolute; clip-path: polygon(50% 0, 100% 100%, 0 75%); }
+
+  @keyframes reveal {
+    0% { transform: scale(.88); opacity: 0; }
+    55% { transform: scale(1.03); box-shadow: 0 0 0 10px var(--accent-soft), var(--shadow); }
+    100% { transform: none; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @keyframes float { to { transform: translateY(-110vh) rotate(25deg); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .step, .heart { animation: none; } .heart { display: none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>생일 축하해,<br><em id="name"></em></h1>
+    <div class="status" id="status"></div>
+    <div class="progress" id="progress"></div>
+  </header>
+  <ol id="steps"></ol>
+</main>
+
+<script>
+const DATA = {"herName":"문정","iterations":150000,"preview":false,"steps":[{"at":{"y":2026,"mo":10,"d":2,"h":9,"mi":30},"final":false,"plain":"Good morning, birthday girl. Your first card is tucked into your laptop."},{"at":{"y":2026,"mo":10,"d":2,"h":10,"mi":30},"final":false,"salt":"M0nntSwt66nADAWyMMxT3w==","iv":"CJoZxpnSPfYAN1LP","ct":"u6a413RumNw9H4WENNzqcDhEa6eCdF2GezWil42+ke5yrFwMASN+2KPTcruTi2Pu60+gblZ5ldjFJNTCrGd+vPjDVKDIUDLfQ/+FvAEkn1wC+MMPE64="},{"at":{"y":2026,"mo":10,"d":2,"h":11,"mi":30},"final":false,"salt":"2IP+Ja+kfiWjOWs7B8lqLw==","iv":"EEY0L2voK4rcSYe1","ct":"zYx/kHYRfc/Z8bikM/u5kcULybQ7HrZ/I1lnginJLKEs38xG3lvvmD/2aCWeywjqN/PyH62BjLiD18X19ngxZn1fwxHT54Z40rkXuzIiF/3BbrSPzw9BUp5ERA=="},{"at":{"y":2026,"mo":10,"d":2,"h":12,"mi":30},"final":false,"salt":"xpFLcqvjIrH5uMLw+O5nYA==","iv":"8MUGYejDadRyO4oP","ct":"4yxn0PAYEyQVQ10NuQiDuacmj0eMf6cbLzCKEBdffwNGt3xXrgwAlFbbQTRCEUjyeg4QjU+6RhIA1VLO6z9Whw1l"},{"at":{"y":2026,"mo":10,"d":2,"h":13,"mi":30},"final":false,"salt":"fo1Zujdnkyw0/eeJNCCCnA==","iv":"zXtcULF2bEuEfHLj","ct":"pgVS0cwcPJrW7M0z9nCQ1e07AC46N7WQsAW8VLVh6noyHIqm6tNeQWatOmeRERNs16FZdwhISRPutnbM77BKXxeO53jnmxVV/Mu/qedu"},{"at":{"y":2026,"mo":10,"d":2,"h":14,"mi":30},"final":false,"salt":"ySMmzJjDtp+o05tSw/wpCA==","iv":"EvT6bPZkmJt0HazX","ct":"eRn2+ujHbeyUbV+KrOAD6DfBUgoBABa6r+wTGJ0srpyXDMla0mke/Fo4a2sPf6D9V++Tsw9aYRQcYOWS"},{"at":{"y":2026,"mo":10,"d":2,"h":15,"mi":30},"final":false,"salt":"LJicXMSLx3Nls2H/tNVu5w==","iv":"KKk39Uy+ICX7+FJq","ct":"bt/UJElJxKur4Us4gPW6q6HZDT3E8hUv2nXLZedd+3IqUtHgeqoNM6w8dju5jBdJqlXy6OqaNssFb9eBXIbL0OHuHuqCb2ytHIAplA=="},{"at":{"y":2026,"mo":10,"d":2,"h":16,"mi":30},"final":false,"salt":"wjTwwKI+o1skRAT7GtccBg==","iv":"bnBBU9CNgMzl7jJN","ct":"lK97Etjp4EbnUjpkBrnqapb0qT2qWrPCyfj2rbSe1Gq+zNsFxsksTlnJdABM+MbKEmg="},{"at":{"y":2026,"mo":10,"d":2,"h":17,"mi":30},"final":false,"salt":"e15I5j+Vp7gwzjnENOR2vA==","iv":"dBBgS0t6jFVoSxgw","ct":"ppIhTFUYV0fKIKFDsEgZld3Gan8/VTQbUWeBz/P1oE6jHchSxgc14RL3gW1JO+aVT4iOcafw4y20ku9InlQY/R4EqId0PcOpjA=="},{"at":{"y":2026,"mo":10,"d":2,"h":18,"mi":30},"final":false,"salt":"N7ZgbQ/Z0Cv5Wg7/4VEvpA==","iv":"wXSB3GPHjFZ4GCGc","ct":"ohWN5rUbpEzeZYlfzWw+gqfevkDxfrJHBGyWRCGF6pBBO5TiLKmWE1bt+EcxocDVmGhnKe5JuBi/LUVsK19S1BOfl2c1h1pyyPq9HXMYv1fAYkq+"},{"at":{"y":2026,"mo":10,"d":2,"h":19,"mi":30},"final":false,"salt":"yIf1UfdpUsiylxf58PMsRg==","iv":"/hGt5rdM/c5gE9va","ct":"QJkLLJQReowseugCS9LZk4XZdfZ3XcL7/ETUitgplqhtM99JCCCJYrV3IdVwzY7YBac="},{"at":{"y":2026,"mo":10,"d":2,"h":20,"mi":30},"final":false,"salt":"HjoFpasIl4IiPB5q65AM9A==","iv":"FeroyD86bTxvD/FQ","ct":"DK8bkbdjeu0hpH6sjMclUApORTWG9b7jAFWO9vzqzAOD5u2ASkx8CwgkpLDlnx6kSwzSQgdy2w=="},{"at":{"y":2026,"mo":10,"d":2,"h":21,"mi":30},"final":true,"salt":"NpfZlFiFnikgfQ2wxEb8JA==","iv":"i+ssmaVpB7KbmeEP","ct":"ZiLo9uxtOM0FFk7f7/dYWj3S1/8bISGUuO4gWEu9q4kdy+dgyEyetg83aUn6YD8UZMKiA1IEbHbCollITaZrJFO1thH1Yq9n/GaxvFNZ7Vmli6tBM1QR"}]};
+const STORE = "bday-hunt-v1:" + DATA.steps.map(s => s.ct || s.plain).join("").length;
+
+const $ = (id) => document.getElementById(id);
+const norm = (s) => s.trim().toLowerCase().replace(/\s+/g, " ");
+const unb64 = (s) => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const timeOf = ({ y, mo, d, h, mi }) => new Date(y, mo, d, h, mi).getTime();
+const fmtTime = (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+const LOCK = `<svg class="lock" viewBox="0 0 24 24" width="14" height="14" aria-label="Locked" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+const LOCK_BODY = `<rect x="10" y="78" width="120" height="96" rx="18"/><circle class="kh" cx="70" cy="114" r="11"/><path class="kh" d="M65 118h10l3 26H62z"/>`;
+const steps = DATA.steps.map(s => ({ ...s, time: timeOf(s.at), text: s.plain ?? null }));
+
+// Remember which words she's entered so a reload doesn't lose progress.
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(STORE)) || {}; } catch {}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch {} };
+
+async function decrypt(step, password) {
+  const enc = new TextEncoder();
+  const base = await crypto.subtle.importKey("raw", enc.encode(norm(password)), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: unb64(step.salt), iterations: DATA.iterations, hash: "SHA-256" },
+    base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: unb64(step.iv) }, key, unb64(step.ct));
+  return new TextDecoder().decode(pt);
+}
+
+// The step she's working on: the first one without text yet.
+const frontier = () => steps.findIndex(s => s.text == null);
+const isDone = () => frontier() === -1;
+
+function render() {
+  const now = Date.now();
+  const f = frontier();
+  const list = $("steps");
+  list.innerHTML = "";
+
+  steps.forEach((s, i) => {
+    const li = document.createElement("li");
+    const open = s.text != null && now >= s.time;
+    const ready = !open && i === f && now >= s.time;
+    li.className = "step" + (s.final ? " final" : "") + (open ? " open" : ready ? " current" : " future") + (open && i === justOpened ? " reveal" : "");
+    const label = s.final ? "The last clue" : `Clue ${i + 1}`;
+    li.innerHTML = `<div class="meta"><span class="n"></span><span class="t"></span></div>`;
+    li.querySelector(".n").textContent = label;
+    const t = li.querySelector(".t");
+    if (open) t.textContent = fmtTime(s.time);
+    else if (!ready && s === steps.find(x => x.time > now)) t.id = "cd";
+    else t.innerHTML = LOCK;
+
+    if (open) {
+      const p = document.createElement("p");
+      p.className = "clue";
+      p.textContent = s.text;
+      li.append(p);
+    } else if (ready) {
+      li.insertAdjacentHTML("beforeend", `
+        <form autocomplete="off">
+          <input placeholder="Word from card ${i}" aria-label="Word from card ${i}" autocapitalize="none" spellcheck="false">
+          <button>Unlock</button>
+        </form>
+        <p class="err" aria-live="polite"></p>`);
+      const form = li.querySelector("form");
+      form.addEventListener("submit", (e) => { e.preventDefault(); tryUnlock(i, li); });
+    }
+    list.append(li);
+  });
+
+  justOpened = -1;
+  $("progress").innerHTML = steps.map((s, i) => `<i class="${s.text != null && now >= s.time ? "on" : ""}"></i>`).join("");
+  const input = list.querySelector("input");
+  if (input && !matchMedia("(hover: none)").matches) input.focus();
+}
+
+async function tryUnlock(i, li) {
+  const input = li.querySelector("input"), btn = li.querySelector("button"), err = li.querySelector(".err");
+  const word = input.value;
+  if (!word.trim()) return;
+  btn.disabled = true; err.textContent = "";
+  try {
+    const text = await decrypt(steps[i], word);
+    saved[i] = word; save();
+    await breakLock(li.querySelector(".t"), () => { steps[i].text = text; justOpened = i; lastSig = null; tick(); });
+    celebrate(steps[i].final ? 60 : 12);
+  } catch {
+    btn.disabled = false;
+    err.textContent = "Not quite ♡";
+    li.classList.remove("shake"); void li.offsetWidth; li.classList.add("shake");
+    input.select();
+  }
+}
+
+// The card's lock icon grows, shakes, cracks and shatters in place. `onBreak`
+// swaps in the revealed clue while the pieces are still falling.
+function breakLock(anchor, onBreak) {
+  if (!anchor || matchMedia("(prefers-reduced-motion: reduce)").matches) { onBreak(); return Promise.resolve(); }
+  const T = 900; // moment of the break
+  const box = anchor.getBoundingClientRect();
+  const fx = document.createElement("div");
+  fx.className = "fx";
+  Object.assign(fx.style, { left: box.left + box.width / 2 + "px", top: box.top + box.height / 2 + "px" });
+  fx.innerHTML = `
+    <div class="fx-ring"></div>
+    <div class="fx-lock"><div class="fx-shake">
+      <svg class="fx-shackle" viewBox="0 0 140 180"><path d="M35 84V52a35 35 0 0 1 70 0v32"/></svg>
+      <svg class="fx-half fx-l" viewBox="0 0 140 180">${LOCK_BODY}</svg>
+      <svg class="fx-half fx-r" viewBox="0 0 140 180">${LOCK_BODY}</svg>
+      <svg class="fx-crack" viewBox="0 0 140 180"><polyline points="73.7,78 77,86.4 61.6,118.8 74.2,147.6 67.2,174"/></svg>
+    </div></div>`;
+  document.body.append(fx);
+  anchor.style.visibility = "hidden";
+  const q = (c) => fx.querySelector(c);
+  const at = (delay, duration, easing = "ease-out") => ({ delay, duration, easing, fill: "both" });
+
+  // Grow out of the icon, then shake harder and harder while a crack runs down the body.
+  q(".fx-lock").animate([
+    { transform: "scale(.3)" }, { transform: "scale(1.15) rotate(4deg)", offset: .7 }, { transform: "none" },
+  ], at(0, 380, "cubic-bezier(.2,.9,.3,1.2)"));
+  const shake = Array.from({ length: 16 }, (_, k) => {
+    const a = (k / 15) * 4, sx = k % 2 ? 1 : -1;
+    return { transform: `translate(${sx * a}px, ${((k % 3) - 1) * a * .4}px) rotate(${-sx * a * 1.5}deg)` };
+  });
+  q(".fx-shake").animate([...shake, { transform: "none" }], { delay: 380, duration: T - 380 });
+  q(".fx-crack polyline").animate([{ strokeDashoffset: 140 }, { strokeDashoffset: 0 }], at(520, T - 520, "ease-in"));
+
+  // Break: shockwave, the shackle pops off, the halves fall away, shards fly.
+  q(".fx-crack").animate([{ opacity: 1 }, { opacity: 0 }], at(T, 100));
+  q(".fx-ring").animate([
+    { transform: "scale(.4)", opacity: 0 }, { transform: "scale(.6)", opacity: 1, offset: .05 },
+    { transform: "scale(3.2)", opacity: 0 },
+  ], at(T, 600));
+  q(".fx-shackle").animate([
+    { transform: "none" }, { transform: "translate(3px,-34px) rotate(18deg)", offset: .3 },
+    { transform: "translate(16px,110px) rotate(130deg)", opacity: 0 },
+  ], at(T, 1000, "cubic-bezier(.3,.5,.6,1)"));
+  for (const [side, dir] of [["l", -1], ["r", 1]]) {
+    q(".fx-" + side).animate([
+      { transform: "none" }, { transform: `translate(${dir * 20}px,-8px) rotate(${dir * 14}deg)`, offset: .22 },
+      { transform: `translate(${dir * 70}px,140px) rotate(${dir * 70}deg)`, opacity: 0 },
+    ], at(T, 1000, "cubic-bezier(.3,.5,.6,1)"));
+  }
+  const colors = ["var(--accent)", "var(--gold)", "var(--ink)"];
+  for (let k = 0; k < 22; k++) {
+    const sh = document.createElement("i");
+    sh.className = "fx-shard";
+    const size = 3 + Math.random() * 7;
+    Object.assign(sh.style, { width: size + "px", height: size + "px", background: colors[k % 3] });
+    fx.append(sh);
+    const ang = Math.random() * Math.PI * 2, d = 45 + Math.random() * 90;
+    const x = Math.cos(ang) * d, y = Math.sin(ang) * d;
+    sh.animate([
+      { transform: "translate(-50%,-50%) scale(0)", opacity: 1 },
+      { transform: `translate(calc(-50% + ${x * .8}px), calc(-50% + ${y * .8}px)) rotate(${Math.random() * 540}deg)`, opacity: 1, offset: .6 },
+      { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y + 60}px)) rotate(${Math.random() * 900}deg) scale(.5)`, opacity: 0 },
+    ], at(T, 800 + Math.random() * 500, "cubic-bezier(.1,.7,.3,1)"));
+  }
+  setTimeout(() => navigator.vibrate?.([40, 30, 90]), T);
+
+  return new Promise((resolve) => {
+    setTimeout(onBreak, T + 150);
+    setTimeout(() => { fx.remove(); resolve(); }, T + 1400);
+  });
+}
+
+function celebrate(n) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  for (let k = 0; k < n; k++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = "♥";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = 14 + Math.random() * 22 + "px";
+    h.style.animationDuration = 4 + Math.random() * 4 + "s";
+    h.style.animationDelay = Math.random() * (n > 20 ? 3 : 1) + "s";
+    document.body.append(h);
+    setTimeout(() => h.remove(), 12000);
+  }
+}
+
+function countdown(ms) {
+  const t = Math.max(0, Math.round(ms / 1000));
+  const h = Math.floor(t / 3600), m = Math.floor(t / 60) % 60, s = t % 60;
+  const pad = (x) => String(x).padStart(2, "0");
+  return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
+
+let lastSig = null, notifiedFor = 0, justOpened = -1;
+function tick() {
+  const now = Date.now();
+  const f = frontier();
+  const next = steps.find(s => s.time > now);
+  const available = steps.filter(s => s.time <= now).length;
+  const sig = `${available}|${f}`;
+  if (sig !== lastSig) {
+    const firstRender = lastSig === null;
+    lastSig = sig;
+    // Clue 1 needs no word, so it gets its lock broken the moment it arrives.
+    if (!firstRender && notifiedFor === 0 && available >= 1) {
+      justOpened = 0;
+      breakLock($("cd"), render).then(() => celebrate(12));
+    } else {
+      render();
+    }
+    // A new clue just became available — notify, if she allowed it.
+    if (!firstRender && available > notifiedFor) {
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification(`💌 A new clue is ready, ${DATA.herName}`);
+      }
+    }
+    notifiedFor = available;
+  }
+
+  let html;
+  if (isDone()) {
+    html = `<span>♥</span>`;
+    document.title = "♥ 생일 축하해";
+  } else if (now < steps[0].time) {
+    html = "";
+    document.title = `${countdown(steps[0].time - now)} · 생일 축하해`;
+  } else if (now >= steps[f].time) {
+    html = `<span>New clue ♡</span>`;
+    document.title = "💌 New clue! · 생일 축하해";
+  } else {
+    html = "";
+    document.title = `${countdown(next.time - now)} · 생일 축하해`;
+  }
+  const askNotify = "Notification" in window && Notification.permission === "default" && !isDone();
+  if (askNotify) html += `<button class="notify">notify me</button>`;
+  const cd = $("cd");
+  if (cd && next) cd.textContent = countdown(next.time - now);
+  const st = $("status");
+  st.hidden = !html;
+  if (st.innerHTML !== html) {
+    st.innerHTML = html;
+    const b = st.querySelector(".notify");
+    if (b) b.onclick = () => Notification.requestPermission().then(tick);
+  }
+}
+
+async function init() {
+  $("name").textContent = DATA.herName;
+  if (DATA.preview) document.body.insertAdjacentHTML("afterbegin", `<div class="preview">Preview build — one clue per minute</div>`);
+
+  // Restore earlier progress in order; stop at the first word that no longer works.
+  for (let i = 1; i < steps.length; i++) {
+    if (!saved[i]) break;
+    try { steps[i].text = await decrypt(steps[i], saved[i]); } catch { break; }
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+init();
+</script>
+</body>
+</html>
