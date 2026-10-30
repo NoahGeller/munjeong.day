@@ -47,6 +47,19 @@
   main { max-width: 620px; margin: 0 auto; padding: 56px 16px 96px; }
 
   header { text-align: center; margin-bottom: 36px; }
+
+  /* Before clue 1: nothing but a giant countdown */
+  #big { display: none; }
+  body.waiting #hello, body.waiting #progress, body.waiting #steps { display: none; }
+  body.waiting header {
+    position: fixed; inset: 0; margin: 0; padding: 16px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  }
+  body.waiting #big {
+    display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600;
+    font-size: clamp(64px, 19vw, 200px); line-height: 1; letter-spacing: -.02em;
+    font-variant-numeric: lining-nums tabular-nums; color: var(--ink);
+  }
   h1 {
     font-family: "Noto Serif KR", serif;
     font-weight: 600; font-size: clamp(36px, 8vw, 52px); line-height: 1.2;
@@ -139,6 +152,7 @@
 <body>
 <main>
   <header>
+    <div id="big" aria-live="off"></div>
     <h1 id="hello" hidden></h1>
     <div class="status" id="status"></div>
     <div class="progress" id="progress"></div>
@@ -147,7 +161,7 @@
 </main>
 
 <script>
-const DATA = {"herName":"문정","iterations":150000,"preview":false,"steps":[{"at":{"y":2026,"mo":10,"d":2,"h":9,"mi":30},"final":false,"plain":"Good morning, birthday girl. Your first card is tucked into your laptop."},{"at":{"y":2026,"mo":10,"d":2,"h":10,"mi":30},"final":false,"salt":"rNOdDJ+xQ3SDM+np6Uc4mQ==","iv":"prQbFZPBhv3S5hOw","ct":"kVNwuOT82ms0rb+dUvIuH1XE3p1dGImOpPgwmkdPxQsbdVFJCDGf1eQ9UH8jcHieJLXgh2BB9QhNOPP2a9r9nfZsbBgtynUXa3pIP/bVGy8hALWpT9g="},{"at":{"y":2026,"mo":10,"d":2,"h":11,"mi":30},"final":false,"salt":"ZekPpWFQmf9Kews1FDBISg==","iv":"h+MH0rN7iORZxkRC","ct":"RvVxwPu6Ro9eEEXePYAB2d/uIeSB2WfzCvAYEV+DCgMva9TwRS/FYEhArSkaqHoTNqOCWyLwC7S3H4Y2UOhFkRpAsHwpl7lHD9AxoM9fXuJAHay+UOI84LxTPA=="},{"at":{"y":2026,"mo":10,"d":2,"h":12,"mi":30},"final":false,"salt":"cdmrjcT1pe3EDkKlIGGG3w==","iv":"LExF9ORV6uQnheLy","ct":"Ac49UOAM5HVFxLkGm/f65xsudf0apRKIsaFKxBN9+33QOkcm/TUI4Ov9vMTgM0OZUV3Q8bVMOU6xyyVfR3J/lwkS"},{"at":{"y":2026,"mo":10,"d":2,"h":13,"mi":30},"final":false,"salt":"fQ4X/OkCKCBAcppw48jDAQ==","iv":"J3WMiKDqdKhAV4zy","ct":"O5VyP0hql3N4lTWTooLn9KITJh97lifnsS/HGUKmgcIrGUPaEwqRpN6Yuss/CSODdK0F0+5OhQAXjgzojhz47y+qlCLLuzmyoNRAujt4"},{"at":{"y":2026,"mo":10,"d":2,"h":14,"mi":30},"final":false,"salt":"hv/wvMjOsMO24ZMHnCe1gg==","iv":"ayFqdTkh61JRtEAC","ct":"qSqEqJPPCPYBVQoBqr/bdMp5r5smR5+mKS2CxuZmwCu7ZOZMjQSdTJfmcYeYfVLj5iC0+Syzb3oEdgs8"},{"at":{"y":2026,"mo":10,"d":2,"h":15,"mi":30},"final":false,"salt":"koKWbipeJXdOzlqoO28wvg==","iv":"z4kOUBG6RWvExA5+","ct":"FbVCJepv3+XlvadcYRgilgW8HzdypGqCrn6CCNP5Gr8sKF+2lTKmb7DAVHc9ZbAWwAmOSyJrO7o1YXtyfiknajj9+IRrZiO72TbZPA=="},{"at":{"y":2026,"mo":10,"d":2,"h":16,"mi":30},"final":false,"salt":"ddy3m7BNBuUJxcvcl8r7dw==","iv":"loBrEM7MytMSiQcr","ct":"Z5gOtHlpTIMK4xBRHZOnkDHnWYFVdweH5HOYVRFTqvU4bmCAFbLY8sVsIBAn+OffBSI="},{"at":{"y":2026,"mo":10,"d":2,"h":17,"mi":30},"final":false,"salt":"4IBSLbg8CShvoYMROI90Xw==","iv":"z/ZNls/SynBW4wAg","ct":"mxqyLSSYEZPuFUFBjWn6RY+wZ0yt5VokrClJjKNC3/i9ZkrWckP4+KcG/ing7+KNnu9wqAYbt2NwsLmgl29c61Hacz+EaLUHYg=="},{"at":{"y":2026,"mo":10,"d":2,"h":18,"mi":30},"final":false,"salt":"NIhV6uw8CsXL5rc4IbmI7A==","iv":"7prw7W+wHXKaG8jy","ct":"8TYAJontAxG+Jo4EBEe8dXfL42bYw8ltmXbyNJowfm5VK+XQ38pSCXWKmFN0Qq1vvAYOjjW4Dpb1NeUYzMcjD/GNTkYFVHyc+94ReAFFhJHME3KW"},{"at":{"y":2026,"mo":10,"d":2,"h":19,"mi":30},"final":false,"salt":"e+GuMYR3oloy35v9sd5/dA==","iv":"qyp75gQjnuuRzCsG","ct":"c6Gu2gxYAub8Wu6SNNAxnuVv0MoJ6OB6qtSe7uCtTUji16EaU0y23Cso/muGxZPViwo="},{"at":{"y":2026,"mo":10,"d":2,"h":20,"mi":30},"final":false,"salt":"bTHC+1CJLVvzLbSuFVe4+w==","iv":"WEfVK5cWEv3hoiB1","ct":"2cD22z3Y2GRN5IilvKMxqOIajx0joW1sCffI2S7Zl9gTQLLNYqT0oBd4R4cXl2Uz1oY/NT+G6w=="},{"at":{"y":2026,"mo":10,"d":2,"h":21,"mi":30},"final":true,"salt":"J91UG4Hf5m7Il7uRD98bRg==","iv":"FrheXl6J7w9kB8l5","ct":"/+khVdt8tCnGFczI5AwUG+Alm7bU58BVcvUG2y3lyOj2jfkMHUHk3thmYdiGB6a1DAnFzjIhje5Po9EHQxytZfaPxjfMaZNgqayPknx6Rd0gj8rnUnQa"}]};
+const DATA = {"herName":"문정","iterations":150000,"preview":false,"steps":[{"at":{"y":2026,"mo":10,"d":2,"h":9,"mi":30},"final":false,"plain":"Good morning, birthday girl. Your first card is tucked into your laptop."},{"at":{"y":2026,"mo":10,"d":2,"h":10,"mi":30},"final":false,"salt":"d3Gp131zuf7mf6fh5yaUpg==","iv":"B+ZUA5qWt0udml0L","ct":"JGc1CaH5km9eh4MWeSiDL9yI3IW9vwPGxJis4NZVhhP+CSqIjrfnJMLgUyV1RW7GyiQpyDQPuaReAR2sevQOBtZqFuvLg9VzNgN5cg1J69oW2lSqDow="},{"at":{"y":2026,"mo":10,"d":2,"h":11,"mi":30},"final":false,"salt":"QqKo0Dci3WWElYNtIxEtAg==","iv":"tqE2gSbzOaoNlTVb","ct":"wH9n1i/KJuMIuaWA9aOuZwwAfL4o9PS3FUhc9WMJN7NBGp5ZpZefMFQ0dOu8ANx/+a7uzMUHOKOrnY4z+P9UTUFnnOaMIV+tZH+fg2WD6aBXwmRfwyFWmQtuVQ=="},{"at":{"y":2026,"mo":10,"d":2,"h":12,"mi":30},"final":false,"salt":"F1AZpD4fzN56Ooi52vs34Q==","iv":"tA1E2oSwaGPPyhe/","ct":"Pe6fYVYI0IaqQG9JVC4hHNUBCS98u4NLxR1FcC/8ovN8jSDldumVU5dK45cH6x6tvk6rvOWM79lNj2L+7u8LAHTz"},{"at":{"y":2026,"mo":10,"d":2,"h":13,"mi":30},"final":false,"salt":"rOgy3NoBtCpIMnSP/RyR2Q==","iv":"YOcQavIAtVAVHDdA","ct":"73Eiw+B5Y+iIrfCfuEvENnM9cwCOr4tWvKJbNKGHOeMrbxngl7BaTeDDl7vm6oEwJy3jxQnvwl0yeqbP8nT1tpHMYdcYEpxxy8ixTSNa"},{"at":{"y":2026,"mo":10,"d":2,"h":14,"mi":30},"final":false,"salt":"eWWhiEMPmuBUbUyPbNgZaw==","iv":"YYEO4FWyuJTBYewC","ct":"N0sVUVhzgctA/ULmD//mQJI1Yvzt5c+3SBAucAc+zVkJUqogqlouAzRLlnfnzuXtpLIR5hHB6+PTpL+z"},{"at":{"y":2026,"mo":10,"d":2,"h":15,"mi":30},"final":false,"salt":"pwC9kwefzS9ldCddJQ6gGA==","iv":"Q51OW5p5jU6CNJ3C","ct":"4WQBRtkDl0CfvRRW2TWds1jwIlmCIuZ3EdsZd84po/eQE7YxQe/UUcl8Ep/+jwKcgalYcgwi1nIaXqJgpAG+2+6k/P94dr2+wxa8Pg=="},{"at":{"y":2026,"mo":10,"d":2,"h":16,"mi":30},"final":false,"salt":"EW6Zf1oC7LmIuQJqwnaiow==","iv":"9UmXYghH7sf6b4ds","ct":"OlMbBka1r4AkDejeynVMH/ZpR3u4jWZpsOJC9L/yOIVyPVXzGLtHDsAO698B6YKRC3s="},{"at":{"y":2026,"mo":10,"d":2,"h":17,"mi":30},"final":false,"salt":"sD+aLAyQ1dx8eScdqdoQzw==","iv":"39UOGQCCtSKxFIN7","ct":"JECUZXNGPaHIc3NonUH/WFKdfBehIOoZhXNI4fGiB3GiLYingmLn80Yhz518IOQTIlehh7LMULoyx6afQEC01sXcGTQKlfAzCA=="},{"at":{"y":2026,"mo":10,"d":2,"h":18,"mi":30},"final":false,"salt":"cWx91bKXb6EMW0fxxFZPrA==","iv":"fkoFY+2A/p/ZdB03","ct":"tkOyZDN5cfS9qVjdqeseZ7BY90nxOe9ENGYLmn8tazMDp51CpvybBH66EAusoPK0jPOgcfszkYkVTD71icZDhUj5Vfcu397ONa0AKjhGuy35B77j"},{"at":{"y":2026,"mo":10,"d":2,"h":19,"mi":30},"final":false,"salt":"dCkByZQzW1Xrnn9CgnBjcQ==","iv":"+FnQ3pks1tgvEVAh","ct":"2gRmtV2tF/+Ushkmcr3sWxcJHQOSsR7UmB4fXU9TZaBwWJ3Dd8hspZUn/AMFT8A+tic="},{"at":{"y":2026,"mo":10,"d":2,"h":20,"mi":30},"final":false,"salt":"E8ZeVdGiXVYam8rKkKY9cw==","iv":"aVMcbz+De3+Us3wL","ct":"aZ8LEsDWOvm+gJLY4tPo4iz1GHdWGhOUEHKOKK77tU93tmDMH/FMlrfq9wUmjwywI29R8iFghg=="},{"at":{"y":2026,"mo":10,"d":2,"h":21,"mi":30},"final":true,"salt":"xU6Uj79ngfPfPLr5qkbn/w==","iv":"vpQPPYF1iei8b3ty","ct":"Ky2Z8zd+gl+aTPXOheF3m3AM6FX+CF5d4ZEjo8JX4McsrcV4KgNHHNhj98eaUh9xErk3Ka11ZSb0Mxo5CCPz99+yzoZmWSnrETjkaOn7AiR7zXnj/ZNN"}]};
 const STORE = "bday-hunt-v1:" + DATA.steps.map(s => s.ct || s.plain).join("").length;
 
 const $ = (id) => document.getElementById(id);
@@ -190,7 +204,7 @@ function render() {
 
   steps.forEach((s, i) => {
     const li = document.createElement("li");
-    const open = s.text != null && now >= s.time;
+    const open = s.text != null && now >= s.time && !(i === 0 && arriving);
     const ready = !open && i === f && now >= s.time;
     li.className = "step" + (s.final ? " final" : "") + (open ? " open" : ready ? " current" : " future") + (open && i === justOpened ? " reveal" : "");
     const label = s.final ? "The last clue" : `Clue ${i + 1}`;
@@ -337,7 +351,7 @@ function countdown(ms) {
   return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
 }
 
-let lastSig = null, notifiedFor = 0, justOpened = -1;
+let lastSig = null, notifiedFor = 0, justOpened = -1, arriving = false;
 function tick() {
   const now = Date.now();
   const f = frontier();
@@ -347,10 +361,19 @@ function tick() {
   if (sig !== lastSig) {
     const firstRender = lastSig === null;
     lastSig = sig;
-    // Clue 1 needs no word, so it gets its lock broken the moment it arrives.
+    // Clue 1 arrives: the countdown blows away, the page fades in, and
+    // clue 1's lock breaks open (it needs no word).
     if (!firstRender && notifiedFor === 0 && available >= 1) {
-      justOpened = 0;
-      breakLock($("cd"), render).then(() => celebrate(12));
+      arriving = true;
+      render();
+      $("big").animate([{ opacity: 1 }, { opacity: 0, transform: "scale(1.2)" }], { duration: 600, easing: "ease-in", fill: "forwards" })
+        .finished.then(() => {
+          document.body.classList.remove("waiting");
+          setTimeout(() => {
+            breakLock(document.querySelector(".step .t"), () => { arriving = false; justOpened = 0; render(); })
+              .then(() => celebrate(12));
+          }, 700);
+        });
     } else {
       render();
     }
@@ -362,6 +385,14 @@ function tick() {
     }
     notifiedFor = available;
   }
+
+  if (now < steps[0].time) {
+    document.body.classList.add("waiting");
+    $("big").textContent = countdown(steps[0].time - now);
+  } else if (!arriving) {
+    document.body.classList.remove("waiting");
+  }
+  if (arriving) $("big").textContent = countdown(0);
 
   const hello = $("hello");
   if (hello.hidden && now >= birthday) {
@@ -397,6 +428,10 @@ function tick() {
 }
 
 async function init() {
+  if (Date.now() < steps[0].time) {
+    document.body.classList.add("waiting");
+    $("big").textContent = countdown(steps[0].time - Date.now());
+  }
   if (DATA.preview) document.body.insertAdjacentHTML("afterbegin", `<div class="preview">Preview build — one clue per minute</div>`);
 
   // Restore earlier progress in order; stop at the first word that no longer works.
